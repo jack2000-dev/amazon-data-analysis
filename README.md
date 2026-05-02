@@ -1,28 +1,28 @@
-# [Project Title]
+# Amazon Sales Data Analysis
 
-> **DELETE THIS: This is a template with pre-filled example. Replace this with your own project title and period. Project title: Customer Churn Analysis — Q3 2024**
+> *Analyzed Amazon product sales data to understand the impact of discounting strategies, category performance, and pricing on customer ratings and review engagement.*
 
-> *Analyzed 12 months of subscription data to identify why churn spiked 23% in Q3 — pricing changes, not product issues, were the main driver.*
-
-**Type:** #EDA #SQL | **Tools:** #Python #PostgreSQL #Tableau | **Period:** `Jan 2023 – Sep 2024`
+**Type:** #EDA | **Tools:** #Python #pandas #matplotlib #seaborn | **Period:** `2024`
 
 ---
 
 ## Key Insights
 
-**1. Pricing change drove 60% of churn** — Customers on the legacy plan churned at 3× the rate after the June price increase. Churn was concentrated in the first 30 days post-change, not spread evenly across the quarter.
+**1. Discounts don't drive ratings** — Discount percentage has a weak/no correlation with product rating (r = -0.162). Customers don't rate products higher simply because they received a discount. Amazon should not rely on discounting as a proxy for quality signals.
 
-**2. High-value customers were most affected** — Users spending $200+/month had a 34% churn rate vs. 12% for lower-tier users. Losing this segment disproportionately impacted revenue.
+**2. Category quality is uneven** — Office Products leads with the highest average rating, while Car & Motorbike and Musical Instruments fall below 4.0 stars. These underperforming categories need targeted quality and post-purchase service improvements.
 
-**3. Churn was regional, not global** — The spike was isolated to the North America segment. APAC and EMEA churn rates stayed flat, suggesting the pricing change hit USD-billed accounts hardest.
+**3. Discounts don't drive more reviews** — The correlation between discount percentage and review count is near zero (r = 0.003). Heavy discounting does not increase customer engagement or review volume.
+
+**4. Price is not a quality signal** — Actual price has only a weak positive correlation with rating (r = 0.128). Budget products perform comparably to premium ones, suggesting price-based market segmentation is viable.
+
+**5. Office Products is an underserved gem** — Despite having the highest average rating, Office Products has relatively low review volume. This category is likely undermarketed and has untapped growth potential.
 
 ---
 
 ## Overview
 
-<!-- Context → Problem → Approach → Outcome. 3–4 sentences. -->
-
-A SaaS company saw its quarterly churn rate jump from 8% to 23% in Q3 2024 following a platform-wide pricing restructure. The goal was to determine whether churn was driven by the price change, product dissatisfaction, or seasonal behavior. Transaction and support ticket data across 18 months were analyzed at customer and regional level. The analysis found that pricing — not product quality — was the primary driver, specifically affecting high-value customers on legacy billing plans.
+Amazon's marketplace spans hundreds of product categories with vastly different pricing, discount, and rating dynamics. This project analyzes the Amazon Sales Dataset (1,465 products after cleaning) to answer five business questions about the relationship between discounts, pricing, product ratings, and customer review volume. The analysis was conducted using Python (pandas, matplotlib, seaborn) following the Ask → Prepare → Process → Analyze → Share → Act framework. Key findings reveal that discounting strategies are largely disconnected from customer satisfaction and engagement, while category-level performance gaps point to concrete operational opportunities.
 
 ---
 
@@ -30,19 +30,21 @@ A SaaS company saw its quarterly churn rate jump from 8% to 23% in Q3 2024 follo
 
 | Field | Details |
 |-------|---------|
-| **Source** | Internal CRM export + PostgreSQL subscription database |
-| **Format** | CSV + SQL tables |
-| **Size** | ~85,000 rows, 14 columns |
-| **Period** | Jan 2023 – Sep 2024 |
-| **Key fields** | `customer_id`, `plan_type`, `billing_region`, `churn_date`, `monthly_spend` |
+| **Source** | [Amazon Sales Dataset](https://www.kaggle.com/datasets/karkavelrajaj/amazon-sales-dataset) via Kaggle (`karkavelrajaj/amazon-sales-dataset`) |
+| **Format** | CSV (`amazon.csv`) |
+| **Raw Size** | 1,465 rows, 16 columns (after deduplication on `product_id`) |
+| **Cleaned Size** | 1,351 rows, 9 columns |
+| **Key fields** | `product_id`, `main_category`, `actual_price`, `discounted_price`, `discount_percentage`, `rating`, `rating_count` |
 
 ---
 
 ## Limitations
 
-- Churn reason was self-reported by ~40% of users only — the rest were inferred from behavioral signals.
-- Cannot distinguish voluntary churn from payment failures without access to the billing system.
-- No A/B test data available — causal claims about pricing are correlational, not confirmed.
+- The dataset is a snapshot — no time dimension available, so trends over time cannot be analyzed.
+- Ratings and reviews are self-selected; they may not represent all buyers (response bias).
+- Discount percentage is calculated from listed prices, which may not reflect actual promotional mechanics (e.g., coupon stacking, Prime deals).
+- Category labels were hierarchical; only the top-level label was retained for analysis, which may lose sub-category nuance.
+- Correlation results are observational — no causal claims can be made without controlled experiments.
 
 ---
 
@@ -50,11 +52,12 @@ A SaaS company saw its quarterly churn rate jump from 8% to 23% in Q3 2024 follo
 
 | File | Description |
 |------|-------------|
-| [`notebooks/churn_eda.ipynb`] | Full exploratory analysis with visualizations |
-| [`queries/churn_by_segment.sql`] | Segmentation queries by region and plan type |
-| [`reports/churn_summary_Q3.pdf`] | Executive summary (2 pages) |
-| [`visuals/churn_dashboard.png`] | Tableau dashboard screenshot |
+| [`main.ipynb`](main.ipynb) | Full analysis notebook covering all 6 phases (Ask → Act) |
+| [`data/raw/amazon.csv`](data/raw/amazon.csv) | Original, unmodified source data |
+| [`data/processed/amazon_clean.csv`](data/processed/amazon_clean.csv) | Cleaned dataset used for analysis |
+| [`docs/presentation.md`](docs/presentation.md) | 15-minute stakeholder talk track |
+| [`reports/REPORT_TEMPLATE.md`](reports/REPORT_TEMPLATE.md) | Full technical report |
 
 ---
 
-*Author: **jack2000-dev** | Last updated: April 2024*
+*Author: **jack2000-dev** | Last updated: May 2026*
